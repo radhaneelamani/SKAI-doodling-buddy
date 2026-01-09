@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 from PIL import Image
 import io
+import base64
 
 st.set_page_config(page_title="Skai", layout="centered")
 
@@ -26,5 +27,10 @@ if uploaded_file:
             if response.status_code == 200:
                 data = response.json()
                 st.success(f"Skai says: {data['comment']}")
+
+                # Display annotated image
+                img_data = base64.b64decode(data['annotated_image'])
+                img = Image.open(io.BytesIO(img_data))
+                st.image(img, caption="Annotated by Skai", use_column_width=True)
             else:
                 st.error("Skai could not process your sketch. Please try again.")
